@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weighted Random Number Picker with Colors</title>
+    <title>japfarkom</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
+        h1 {
+            margin-bottom: 30px;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: Georgia, serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,32 +20,37 @@
         }
         .container {
             text-align: center;
+            margin-bottom: 50px;
         }
         button {
             padding: 10px 20px;
+            font-family: Georgia, serif;
             font-size: 16px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
+            background-color: transparent;
+            color: black;
+            border: 1px solid rgb(232, 232, 232);
             border-radius: 5px;
             cursor: pointer;
             margin-top: 20px;
+            margin: 5px;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: rgb(232, 232, 232);
+            color: black;
         }
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
+        .screenshot-container {
+            background: white;
+            padding: 50px;
+            display: inline-block;
         }
         .color-band {
             display: flex;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
         .color-rect {
-            width: 120px;
-            height: 100px;
+            width: 320px;
+            height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -54,16 +64,24 @@
             font-size: 14px;
             color: black;
         }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
     </style>
 </head>
-<body>
+<body onload="pickRandomNumbers()">
     <div class="container">
-        <h1>Weighted Random Number Picker with Colors</h1>
-        <div class="color-band" id="colorBand"></div>
-        <button onclick="pickRandomNumbers()">Pick Random Numbers</button>
-        <div id="result"></div>
+        <h1>ja·fa·ko</h1>
+        <div class="screenshot-container">
+            <div class="color-band" id="colorBand"></div>
+        </div>
+        <div class="button-container">
+            <button onclick="pickRandomNumbers()">new combination</button>
+            <button onclick="captureAndSave()">save combination</button>
+        </div>
     </div>
-
     <script>
         const numberProperties = {
             1: { weight: 5, color: "#FF5733" },
@@ -82,7 +100,6 @@
             14: { weight: 70, color: "#8AFF33" },
             15: { weight: 75, color: "#FF33F3" }
         };
-
         const weights = Object.values(numberProperties).map(prop => prop.weight);
         const colors = Object.values(numberProperties).map(prop => prop.color);
 
@@ -91,12 +108,10 @@
             const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
             let remainingWeights = [...weights];
             let remainingNumbers = [...Array(weights.length).keys()].map(i => i + 1);
-
             for (let i = 0; i < 3 && remainingNumbers.length > 0; i++) {
                 const totalRemainingWeight = remainingWeights.reduce((sum, weight) => sum + weight, 0);
                 let randomValue = Math.random() * totalRemainingWeight;
                 let cumulativeWeight = 0;
-
                 for (let j = 0; j < remainingWeights.length; j++) {
                     cumulativeWeight += remainingWeights[j];
                     if (randomValue < cumulativeWeight) {
@@ -107,32 +122,46 @@
                     }
                 }
             }
-
-            document.getElementById('result').innerText = `Picked Numbers: ${numbers.join(', ')}`;
             displayColorBand(numbers);
         }
 
         function displayColorBand(numbers) {
             const colorBand = document.getElementById('colorBand');
             colorBand.innerHTML = '';
-
             numbers.forEach(number => {
                 const colorRectContainer = document.createElement('div');
                 colorRectContainer.style.display = 'flex';
                 colorRectContainer.style.flexDirection = 'column';
                 colorRectContainer.style.alignItems = 'center';
-
                 const colorRect = document.createElement('div');
                 colorRect.className = 'color-rect';
                 colorRect.style.backgroundColor = numberProperties[number].color;
-
                 const colorInfo = document.createElement('div');
                 colorInfo.className = 'color-info';
                 colorInfo.innerText = `${number} (${numberProperties[number].color})`;
-
                 colorRectContainer.appendChild(colorRect);
                 colorRectContainer.appendChild(colorInfo);
                 colorBand.appendChild(colorRectContainer);
+            });
+        }
+
+        function captureAndSave() {
+            const element = document.querySelector('.screenshot-container');
+            html2canvas(element).then(canvas => {
+                const now = new Date();
+                const year = now.getFullYear().toString().slice(-2);
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                const filename = `jafako-${year}${month}${day}${hours}${minutes}${seconds}.png`;
+
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
             });
         }
     </script>
