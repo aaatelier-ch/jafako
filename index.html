@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weighted Random Number Picker with Colors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .color-band {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .color-rect {
+            width: 120px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .color-info {
+            margin-top: 5px;
+            font-size: 14px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weighted Random Number Picker with Colors</h1>
+        <div class="color-band" id="colorBand"></div>
+        <button onclick="pickRandomNumbers()">Pick Random Numbers</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const numberProperties = {
+            1: { weight: 5, color: "#FF5733" },
+            2: { weight: 10, color: "#33FF57" },
+            3: { weight: 15, color: "#3357FF" },
+            4: { weight: 20, color: "#F3FF33" },
+            5: { weight: 25, color: "#FF33F3" },
+            6: { weight: 30, color: "#33FFF3" },
+            7: { weight: 35, color: "#8A33FF" },
+            8: { weight: 40, color: "#FF8A33" },
+            9: { weight: 45, color: "#33FF8A" },
+            10: { weight: 50, color: "#FF338A" },
+            11: { weight: 55, color: "#338AFF" },
+            12: { weight: 60, color: "#F333FF" },
+            13: { weight: 65, color: "#33F3FF" },
+            14: { weight: 70, color: "#8AFF33" },
+            15: { weight: 75, color: "#FF33F3" }
+        };
+
+        const weights = Object.values(numberProperties).map(prop => prop.weight);
+        const colors = Object.values(numberProperties).map(prop => prop.color);
+
+        function pickRandomNumbers() {
+            const numbers = [];
+            const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+            let remainingWeights = [...weights];
+            let remainingNumbers = [...Array(weights.length).keys()].map(i => i + 1);
+
+            for (let i = 0; i < 3 && remainingNumbers.length > 0; i++) {
+                const totalRemainingWeight = remainingWeights.reduce((sum, weight) => sum + weight, 0);
+                let randomValue = Math.random() * totalRemainingWeight;
+                let cumulativeWeight = 0;
+
+                for (let j = 0; j < remainingWeights.length; j++) {
+                    cumulativeWeight += remainingWeights[j];
+                    if (randomValue < cumulativeWeight) {
+                        numbers.push(remainingNumbers[j]);
+                        remainingWeights.splice(j, 1);
+                        remainingNumbers.splice(j, 1);
+                        break;
+                    }
+                }
+            }
+
+            document.getElementById('result').innerText = `Picked Numbers: ${numbers.join(', ')}`;
+            displayColorBand(numbers);
+        }
+
+        function displayColorBand(numbers) {
+            const colorBand = document.getElementById('colorBand');
+            colorBand.innerHTML = '';
+
+            numbers.forEach(number => {
+                const colorRectContainer = document.createElement('div');
+                colorRectContainer.style.display = 'flex';
+                colorRectContainer.style.flexDirection = 'column';
+                colorRectContainer.style.alignItems = 'center';
+
+                const colorRect = document.createElement('div');
+                colorRect.className = 'color-rect';
+                colorRect.style.backgroundColor = numberProperties[number].color;
+
+                const colorInfo = document.createElement('div');
+                colorInfo.className = 'color-info';
+                colorInfo.innerText = `${number} (${numberProperties[number].color})`;
+
+                colorRectContainer.appendChild(colorRect);
+                colorRectContainer.appendChild(colorInfo);
+                colorBand.appendChild(colorRectContainer);
+            });
+        }
+    </script>
+</body>
+</html>
