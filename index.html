@@ -9,7 +9,6 @@
         h1 {
             margin-bottom: 30px;
         }
-
         body {
             font-family: Georgia, serif;
             display: flex;
@@ -39,8 +38,8 @@
             color: black;
         }
         .screenshot-container {
-            background: white;
-            padding: 50px;
+            background: transparent;
+            padding: 0;
             display: inline-block;
         }
         .color-band {
@@ -69,26 +68,30 @@
             justify-content: center;
             gap: 10px;
         }
+
         @media (max-width: 768px) {
-        .color-band {
-            flex-direction: column;
-            align-items: center;
-        }
-        .color-rect {
-            width: 100%;
-            min-width: 250px;
-            height: 100px;
-        }
-        .screenshot-container {
-            background: transparent;
-            padding: 0px;
-            width: 100%;
-        }
-        .color-info {
-            margin-top: -13px;
+            body {
+                padding: 20px;
+                height: auto;
+            }
+            .container {
+                width: 100%;
+            }
+            .color-band {
+                flex-direction: column;
+                align-items: center;
+            }
+            .color-rect {
+                width: 100%;
+                min-width: 250px;
+                height: 150px;
+            }
+            .color-info {
+            margin-top: -12px;
             font-size: 10px;
             color: black;
-    }
+        }
+        }
     </style>
 </head>
 <body onload="pickRandomNumbers()">
@@ -167,7 +170,9 @@
 
         function captureAndSave() {
             const element = document.querySelector('.screenshot-container');
-            html2canvas(element).then(canvas => {
+            html2canvas(element, {
+                backgroundColor: null,
+            }).then(canvas => {
                 const now = new Date();
                 const year = now.getFullYear().toString().slice(-2);
                 const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -175,9 +180,7 @@
                 const hours = String(now.getHours()).padStart(2, '0');
                 const minutes = String(now.getMinutes()).padStart(2, '0');
                 const seconds = String(now.getSeconds()).padStart(2, '0');
-
                 const filename = `jafako-${year}${month}${day}${hours}${minutes}${seconds}.png`;
-
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = canvas.toDataURL('image/png');
