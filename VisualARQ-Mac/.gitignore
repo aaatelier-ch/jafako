@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+*.rhp
+*.dll
+*.pdb
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# macOS
+.DS_Store
+
+# Rhino / Grasshopper
+*.3dmbak
+*.rhl
+*_AutoSave.3dm
+
+# NuGet
+*.nupkg
+packages/

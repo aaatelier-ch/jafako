@@ -1,0 +1,8 @@
+[Plugin]
+Name=VisualARQ-Mac
+Version=1.0.0
+Description=Open-source BIM plugin for Rhino 7 macOS - VisualARQ alternative
+Developer=Open Source Community
+Website=https://github.com/visualarq-mac/visualarq-mac
+Icon=VisualARQMac_icon.png
+Requires=Rhino 7.0
